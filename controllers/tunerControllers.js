@@ -1,9 +1,15 @@
 const express = require('express')
 const tuner = express.Router()
+const { retrieveAllSongs } = require('../queries/songs')
 
+tuner.get('/' , async(req,res) => {
+    const allSongs = await retrieveAllSongs()
 
-tuner.get('/' ,(req,res) => {
-    res.json({message: 'Welcome to Tuner'})
+    if(allSongs[0]) {
+        res.status(200).json(allSongs)
+    } else {
+        res.status(500).json({error:" Internal Server Error!" })
+    }
 })
 
 
