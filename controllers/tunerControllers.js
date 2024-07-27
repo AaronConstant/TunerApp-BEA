@@ -15,7 +15,7 @@ tuner.get('/' , async ( req,res ) => {
 tuner.get( '/:id', async ( req, res ) => {
     const { id } = req.params
     const oneSong =  await getOneSong(id)
-    if(oneSong) {
+    if(oneSong.id) {
         res.status(200).json(oneSong)
     } else {
         res.status(404).json({error: "Song Not Found!"})
@@ -25,6 +25,7 @@ tuner.get( '/:id', async ( req, res ) => {
 tuner.post('/', async ( req,res ) => {
     const newSong = await createSongEntry(req.body)
     res.json(newSong)
+
 })
 
 module.exports = tuner
