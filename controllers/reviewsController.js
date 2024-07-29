@@ -9,7 +9,8 @@ const {
     updateReview 
 } = require('../queries/reviews')
 
-const { getOneSong } = require('../queries/songs')
+const { getOneSong } = require('../queries/songs');
+const tuner = require("./tunerControllers");
 
 reviews.get('/', async (req, res) => {
     const { tuner_id } = req.params;
@@ -39,11 +40,13 @@ reviews.get('/:id', async (req, res) => {
 });
 
 reviews.post('/', async (req, res) => {
+    const {tuner_id} = req.params;
     try {
-        const newReview = await createNewReview(req.body);
+        // because of the merge you will be taken to the review of that specific song and it will give it the ID of the newly created object and it will be taggedto that specific song
+        const newReview = await createNewReview({tuner_id, ...req.body});
         res.status(201).json(newReview);
     } catch (error) {
-        res.status(500).json({ error: "Please Check all information when submitting!" });
+        res.status(500).json( { error: "Please Check all information when submitting!" } );
     }
 });
 
@@ -57,13 +60,20 @@ reviews.delete('/:id', async (req, res) => {
 });
 
 reviews.put('/:id', async (req, res) => {
+    const {tuner_id, id} = req.params;
     try {
-        const updatedReview = await updateReview(req.params.id, req.body);
-        res.status(200).json(updatedReview);
+        const updatedReview = await updateReview({tuner_id, id, ...req.body});
+        if(updatedReview.id){  
+            res.status(200).json(updatedReview);   
+        } else {
+            res.status(500).json({ error: "Unable to update successfully!" });
+        }
     } catch (error) {
-        res.status(500).json({ error: "Unable to update successfully!" });
+        res.status(500).json({ error: error.message });
     }
 });
+
+
 
 
 

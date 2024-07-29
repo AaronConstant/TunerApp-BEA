@@ -38,6 +38,25 @@ const createNewReview = async (review) => {
     }
 }
 
+const updateReview = async (review) => {
+    try {
+        const updatedReview = await db.one(
+            "UPDATE reviews SET reviewer_name=$1, review_text=$2, rating=$3, tuner_id=$4, review_date=$5 WHERE id=$6 RETURNING *",
+            [
+                review.reviewer_name,
+                review.review_text,
+                review.rating,
+                review.tuner_id,
+                review.review_date,
+                review.id
+            ]
+        );
+        return updatedReview;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const deleteReview = async (id) => {
     try {
       const deletedReview = await db.one(
@@ -50,24 +69,6 @@ const deleteReview = async (id) => {
     }
   };
 
-  const updateReview = async (id, review) => {
-    try {
-        const updatedReview = await db.one(
-            "UPDATE reviews SET reviewer_name=$1, review_text=$2, rating=$3, tuner_id=$4, review_date=$5 WHERE id=$6 RETURNING *",
-            [
-                review.reviewer_name,
-                review.review_text,
-                review.rating,
-                review.tuner_id,
-                review.review_date,
-                id
-            ]
-        );
-        return updatedReview;
-    } catch (error) {
-        return error;
-    }
-};
 
 
 module.exports = { 
