@@ -2,7 +2,11 @@ const express = require('express')
 const tuner = express.Router()
 const { retrieveAllSongs, getOneSong, createSongEntry, removeSongEntry, updateSongEntry  } = require('../queries/songs')
 const { checkName } = require('../validations/checkSongs.js')
- 
+
+const reviewsController = require('./reviewsController.js')
+
+tuner.use('/:tuner_id/reviews', reviewsController)
+
 //localhost:2020/tuner/
 tuner.get('/' , async ( req,res ) => {
     const allSongs = await retrieveAllSongs()
@@ -30,7 +34,6 @@ tuner.post('/', checkName, async ( req,res ) => {
 
 
     } catch (error) {
-        console.log(error)
         res.status(400).json(error.message)
     }
 })

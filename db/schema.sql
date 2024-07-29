@@ -15,7 +15,7 @@ CREATE TABLE tuners (
     is_favorite BOOLEAN,
     genre VARCHAR(50),
     release_date DATE,
-    rating INT (rating >= 1 AND rating <= 10),
+    rating INT CHECK (rating >= 1 AND rating <= 10),
     play_count INT DEFAULT 0,
     added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -6,11 +6,10 @@ const { db, pgp } = require('../db/dbConfig')
 // you access the error through destructuring the object even though the object is QueryResultError within pgp. we access it through the variable error in our code 
 const { QueryResultError } = pgp.errors;
 
-console.log(QueryResultError)
 const retrieveAllSongs = async ()=> {
     try {
-        const getSongs = await db.any("SELECT * FROM tuners")
-        return getSongs
+        const getAllSongs = await db.any("SELECT * FROM tuners")
+        return getAllSongs
 
     } catch(error) {
         return error
@@ -24,7 +23,7 @@ const getOneSong = async (id) => {
         return oneSong;
     } catch (error) {
         
-        // checking to see if there is an instance of an QueryResultError from the the pgp library.
+        // checking to see if there is an instance of an QueryResultError from the the pgp library. This is an object!
         if (error instanceof QueryResultError) {
             if (error.result.received === 0 || error.result.received > 5) {
                 console.error("Error Received: No Songs matching provided ID!");
