@@ -1,10 +1,10 @@
 const express = require('express')
 const tuner = express.Router()
-const { retrieveAllSongs, getOneSong, createSongEntry } = require('../queries/songs')
+const { retrieveAllSongs, getOneSong, createSongEntry, removeSongEntry, updateSongEntry  } = require('../queries/songs')
 
+//localhost:2020/tuner/
 tuner.get('/' , async ( req,res ) => {
     const allSongs = await retrieveAllSongs()
-    // console.log(allSongs)
     if(allSongs[0]) {
         res.status(200).json(allSongs)
     } else {
@@ -24,8 +24,36 @@ tuner.get( '/:id', async ( req, res ) => {
 
 tuner.post('/', async ( req,res ) => {
     const newSong = await createSongEntry(req.body)
-    res.json(newSong)
+    res.status(201).json(newSong)
+})
+
+tuner.put('/:id', async (req, res)=> {
+    const { id } = req.params;
+    const updatedSongEntry = await updateSongEntry(id, req.body)
+
+    if(updatedSongEntry.id) {
+        res.status(200).json(updatedSongEntry)
+    } else {
+        res.status(404).json({error: "Was not able to update Song Entry, Try again."})
+    }
+
 
 })
+
+
+
+tuner.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    const deleteSongEntry = await removeSongEntry(id);
+    
+    if (deleteSongEntry.id) {
+        res.status(200).json({ message: "Song Successfully Deleted!" });
+    } else {
+        res.status(400).json({ error: "Song Unsuccessfully Deleted, Please try again!" });
+    }
+});
+
+
+
 
 module.exports = tuner
