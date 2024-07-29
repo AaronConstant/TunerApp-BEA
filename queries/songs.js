@@ -44,13 +44,18 @@ const getOneSong = async (id) => {
 const createSongEntry = async (song) => {
     try {
         
-    const newSong = await db.one("INSERT INTO tuners (name, artist, album, time, is_favorite) VALUES ($1, $2, $3, $4, $5) RETURNING *", 
+    const newSong = await db.one("INSERT INTO tuners (name, artist, album, time, is_favorite, genre, release_date, rating, play_count, added_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", 
         [
             song.name, 
             song.artist,
             song.album,
             song.time,
-            song.is_favorite
+            song.is_favorite,
+            song.genre,
+            song.release_date,
+            song.rating,
+            song.play_count,
+            song.added_date
         ])
     return newSong;
     
@@ -61,12 +66,17 @@ const createSongEntry = async (song) => {
 
 const updateSongEntry = async (id, song) => {
     try{
-        const updateToSongEntry = await db.one("UPDATE tuners SET name=$1, artist=$2, album=$3, time=$4, is_favorite=$5 WHERE id=$6 RETURNING *", [
+        const updateToSongEntry = await db.one("UPDATE tuners SET name=$1, artist=$2, album=$3, time=$4, is_favorite=$5, genre=$6, release_date=$7,rating=$8, play_count=$9, added_date=$10 WHERE id=$11 RETURNING *", [
             song.name, 
             song.artist,
             song.album,
             song.time,
             song.is_favorite,
+            song.genre,
+            song.release_date,
+            song.rating,
+            song.play_count,
+            song.added_date,
             id
         ])
 
