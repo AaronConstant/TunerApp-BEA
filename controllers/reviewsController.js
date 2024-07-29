@@ -1,5 +1,6 @@
 const express = require("express")
 const reviews = express.Router({ mergeParams: true })
+
 const { 
     displayAllReviews, 
     displayOneReview, 
@@ -8,13 +9,15 @@ const {
     updateReview 
 } = require('../queries/reviews')
 
+const { getOneSong } = require('../queries/songs')
 
 reviews.get('/', async (req, res) => {
     const { tuner_id } = req.params;
+    const review = await displayAllReviews(tuner_id);
+    const song = await getOneSong(tuner_id)
     try {
-        const allReviews = await displayAllReviews(tuner_id);
-        if (allReviews.length > 0) {
-            res.status(200).json(allReviews);
+        if (song.id) {
+            res.status(200).json({...song, review});
         } else {
             res.status(404).json({ error: "No reviews found!" });
         }
@@ -25,10 +28,11 @@ reviews.get('/', async (req, res) => {
 
 
 reviews.get('/:id', async (req, res) => {
-    const { id } = req.params
+    const { tuner_id, id } = req.params
+    const oneReview = await displayOneReview(id);
+    const song = await getOneSong(tuner_id)
     try {
-        const oneReview = await displayOneReview(id);
-        res.status(200).json(oneReview);
+        res.status(200).json({ ...song, oneReview});
     } catch (error) {
         res.status(500).json({ error: "An Issue occurred displaying Review!" });
     }
