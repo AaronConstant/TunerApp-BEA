@@ -1,7 +1,8 @@
 const express = require('express')
 const tuner = express.Router()
 const { retrieveAllSongs, getOneSong, createSongEntry, removeSongEntry, updateSongEntry  } = require('../queries/songs')
-
+const { checkName } = require('../validations/checkSongs.js')
+ 
 //localhost:2020/tuner/
 tuner.get('/' , async ( req,res ) => {
     const allSongs = await retrieveAllSongs()
@@ -22,9 +23,16 @@ tuner.get( '/:id', async ( req, res ) => {
     }
 } )
 
-tuner.post('/', async ( req,res ) => {
-    const newSong = await createSongEntry(req.body)
-    res.status(201).json(newSong)
+tuner.post('/', checkName, async ( req,res ) => {
+    try{
+        const newSong = await createSongEntry(req.body)
+        res.status(201).json(newSong)
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).json(error.message)
+    }
 })
 
 tuner.put('/:id', async (req, res)=> {
