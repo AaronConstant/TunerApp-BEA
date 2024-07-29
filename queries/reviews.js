@@ -1,15 +1,14 @@
+const tuner = require('../controllers/tunerControllers');
 const {db, pgp } = require('../db/dbConfig')
 
 const { QueryResultError } = pgp.errors;
 
-const displayAllReviews = async (id)=> {
-    try{
-        const getReviews = await db.any("SELECT*FROM reviews WHERE id=$1", id)
-        return getReviews
-
-
-    }catch(error){
-        return error
+const displayAllReviews = async (tuner_id) => {
+    try {
+        const getReviews = await db.any("SELECT * FROM reviews WHERE tuner_id=$1", tuner_id);
+        return getReviews;
+    } catch (error) {
+        return error;
     }
 }
 
@@ -24,13 +23,14 @@ const displayOneReview = async (id) => {
 
 const createNewReview = async (review) => {
     try{
-        const newReview = await db.one("INSERT INTO reviews (reviewer_name, review_text, rating, tuner_id, review_date) VALUES($1, $2, $3, $4, $5)RETURNING *", [
+        const newReview = await db.one("INSERT INTO reviews (reviewer_name, review_text, rating, tuner_id, review_date) VALUES($1, $2, $3, $4, $5)RETURNING *", 
+            [
             review.reviewer_name, 
             review.review_text,
             review.rating, 
             review.tuner_id, 
             review.review_date
-        ]) 
+            ]) 
         return newReview
 
     }catch(error){
@@ -52,22 +52,28 @@ const deleteReview = async (id) => {
 
   const updateReview = async (id, review) => {
     try {
-      const updatedReview = await db.one(
-        "UPDATE reviews SET reviewer_name=$1, review_text=$2, rating=$3, tuner_id=$4, review_date=$5 where id=$6 RETURNING *",
-        [
-          review.reviewer,
-          review.title,
-          review.content,
-          review.rating,
-          review.bookmark_id,
-          id,
-        ]
-      );
-      return updatedReview;
+        const updatedReview = await db.one(
+            "UPDATE reviews SET reviewer_name=$1, review_text=$2, rating=$3, tuner_id=$4, review_date=$5 WHERE id=$6 RETURNING *",
+            [
+                review.reviewer_name,
+                review.review_text,
+                review.rating,
+                review.tuner_id,
+                review.review_date,
+                id
+            ]
+        );
+        return updatedReview;
     } catch (error) {
-      return error;
+        return error;
     }
-  };
+};
 
 
-module.exports = { displayAllReviews, displayOneReview, createNewReview, deleteReview, updateReview }
+module.exports = { 
+    displayAllReviews, 
+    displayOneReview, 
+    createNewReview, 
+    deleteReview, 
+    updateReview 
+};

@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const tunerController = require('./controllers/tunerControllers')
-
+const reviewsController = require ('./controllers/reviewsController')
 //Middleware
 app.use(express.json())
 app.use(cors())
@@ -14,7 +14,7 @@ app.get('/', (req,res)=> {
 })
 
 app.use('/tuner', tunerController)
-
+app.use('/reviews', reviewsController )
 
 
 app.get("*", (req,res)=> {
